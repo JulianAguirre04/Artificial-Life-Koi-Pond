@@ -1,3 +1,6 @@
+import { CONFIG } from './sim/config';
+import { World } from './sim/world';
+import { Renderer } from './render/renderer';
 import { Application, Container, Graphics } from 'pixi.js'
 import './style.css'
 
@@ -31,12 +34,25 @@ async function start() {
     );
     pond.scale.set(scale);
     pond.position.set(
-      (app.screen.width - TANK_W * scale) / 2,
-      (app.screen.height - TANK_H * scale) / 2,
+      (app.screen.width - CONFIG.tankWidth * scale) / 2,
+      (app.screen.height - CONFIG.tankHeight * scale) / 2,
     );
   };
   fit();
   app.renderer.on('resize', fit);
+  const world = new World(CONFIG.seed);
+  const renderer = new Renderer(pond);
+
+  const tickDt = 1 / CONFIG.ticksPerSecond
+  let owed = 0;
+  app.ticker.add((ticker) => {
+    owed = Math.min(owed + ticker.deltaMS / 1000, 0.25);
+    while (owed >= tickDt) {
+      world.step(tickDt);
+      owed -= tickDt;
+    }
+    renderer.draw(world);
+  })
 }
 
 start();
