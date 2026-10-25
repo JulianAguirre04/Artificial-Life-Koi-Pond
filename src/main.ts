@@ -26,7 +26,7 @@ async function start() {
   const fit = () => {
     const margin = 40;
     const scale = Math.min(
-      (app.screen.width = margin) / TANK_W,
+      (app.screen.width - margin) / TANK_W,
       (app.screen.height - margin) / TANK_H,
     );
     pond.scale.set(scale);
