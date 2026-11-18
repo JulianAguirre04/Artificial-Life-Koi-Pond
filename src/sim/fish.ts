@@ -1,3 +1,4 @@
+import {CONFIG} from './config';
 export class Fish {
     id: number;
     x: number;
@@ -5,6 +6,7 @@ export class Fish {
     vx: number;
     vy: number;
     wanderAngle: number;
+    energy: number;
 
     constructor(id: number, x: number, y: number, angle: number, speed: number) { 
         this.id = id;
@@ -13,5 +15,6 @@ export class Fish {
         this.vx = Math.cos(angle) * speed;
         this.vy = Math.sin(angle) * speed;
         this.wanderAngle = angle;
+        this.energy = CONFIG.startingEnergy;
     }
 }

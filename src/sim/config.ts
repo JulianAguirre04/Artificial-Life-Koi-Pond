@@ -17,5 +17,11 @@ export const CONFIG = {
     maxFood: 40,
     foodEnergy: 25, // how much energy a fish gets from a single pellet
 
+// Energy Behavior parameters
+    startingEnergy: 60, 
+    maxEnergy: 100, 
+    energyBurn: 2, // how much energy a fish burns per second
+    sightRange: 250, // how far a fish can see food
+    eatRadius: 12, // how close a fish has to be to eat food
 
 };

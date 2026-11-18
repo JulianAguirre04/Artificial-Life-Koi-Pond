@@ -29,13 +29,30 @@ export class World{
     }
 
     private updateFish(f: Fish, dt: number) {
-        const { maxSpeed, wallMargin, tankWidth, tankHeight } = CONFIG;
+        const { maxSpeed, wallMargin, tankWidth, tankHeight} = CONFIG;
 
 
         // Wander: nudge the heading of the fish it wants a little random
         f.wanderAngle += this.rng.range(-1, 1) * CONFIG.wanderJitter;
         let desiredX = Math.cos(f.wanderAngle) * maxSpeed;
         let desiredY = Math.sin(f.wanderAngle) * maxSpeed;
+
+
+        // Seek: find the closest pellet this fish can see
+        let nearest: Food | null = null;
+        let nearestDist = CONFIG.sightRange;
+
+        for (const p of this.food) {
+           const dx = p.x - f.x;
+            const dy = p.y - f.y;
+            const d =  Math.hypot(dx, dy);
+            if (d < nearestDist) {
+                desiredX = (dx / d) * maxSpeed;
+                desiredY = (dy / d) * maxSpeed;
+                nearest = p;
+                nearestDist = d;
+            }
+        }
 
         // Walls: near an edge, makes them want to swim back toward center
         let nearWall = false;
@@ -53,6 +70,7 @@ export class World{
         if (len > maxChange) {
             sx = (sx / len) * maxChange;
             sy = (sy / len) * maxChange;
+
     }
         f.vx += sx;
         f.vy += sy;
@@ -60,6 +78,9 @@ export class World{
         // Move, and never leave the tank.
         f.x = Math.min(Math.max(f.x + f.vx * dt, 0), tankWidth);
         f.y = Math.min(Math.max(f.y + f.vy * dt, 0), tankHeight);
+
+        // energy and food manegment
+        f.energy -= CONFIG.energyBurn * dt;
     }
 
     private spawnFood(dt: number) {
