@@ -4,6 +4,7 @@ import type { World } from '../sim/world';
 export class Renderer {
     layer = new Container();
     sprites: Map<number, Graphics> = new Map();
+    pelletSprites: Map<number, Graphics> =  new Map();
 
     constructor(pond: Container) {
         pond.addChild(this.layer);
@@ -22,5 +23,16 @@ draw(world: World) {
       g.position.set(f.x, f.y);
       g.rotation = Math.atan2(f.vy, f.vx);
     }
+  
+  for (const f of world.food) {
+    let g = this.pelletSprites.get(f.id)
+    if (!g) {
+      g = new Graphics()
+      .circle(0,0,3).fill(0x023020)
+      this.layer.addChild(g)
+      this.pelletSprites.set(f.id,g)
+    }
+    g.position.set(f.x, f.y);
+  }
   }   
 }

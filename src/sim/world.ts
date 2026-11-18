@@ -1,12 +1,15 @@
 import {CONFIG} from './config';
 import {Fish} from './fish';
 import {Rng} from './rng';
+import {Food} from './food';
 
 export class World{
     fish: Fish[] = [];
+    food: Food[] = [];
     rng: Rng;
     tick = 0;
     nextId = 1;
+    foodTimer = 0;
 
 
     constructor(seed: number) {
@@ -20,6 +23,7 @@ export class World{
     }
     
     step(dt: number) {
+        this.spawnFood(dt);
         for (const f of this.fish) this.updateFish(f, dt);
         this.tick++;
     }
@@ -56,6 +60,19 @@ export class World{
         // Move, and never leave the tank.
         f.x = Math.min(Math.max(f.x + f.vx * dt, 0), tankWidth);
         f.y = Math.min(Math.max(f.y + f.vy * dt, 0), tankHeight);
+    }
+
+    private spawnFood(dt: number) {
+        this.foodTimer += dt;
+        const interval = 1 / CONFIG.foodPerSecond;
+        while (this.foodTimer >= interval) {
+            this.foodTimer -= interval;
+            if (this.food.length < CONFIG.maxFood) {
+                const x = this.rng.range(110, CONFIG.tankWidth - 110)
+                const y = this.rng.range(110, CONFIG.tankHeight - 110)
+                this.food.push(new Food(this.nextId++, x, y, CONFIG.foodEnergy));
+            }
+        }
     }
 
 }
