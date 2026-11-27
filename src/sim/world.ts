@@ -26,6 +26,7 @@ export class World{
         this.spawnFood(dt);
         for (const f of this.fish) this.updateFish(f, dt);
         this.tick++;
+        this.food = this.food.filter(p => !p.eaten);
     }
 
     private updateFish(f: Fish, dt: number) {
@@ -78,6 +79,17 @@ export class World{
         // Move, and never leave the tank.
         f.x = Math.min(Math.max(f.x + f.vx * dt, 0), tankWidth);
         f.y = Math.min(Math.max(f.y + f.vy * dt, 0), tankHeight);
+
+        // Pellet consumption
+        if (nearest && !nearest.eaten){
+            const dx = nearest.x - f.x;
+            const dy = nearest.y - f.y;
+            const d = Math.hypot(dx, dy);
+            if (d < CONFIG.eatRadius){
+                nearest.eaten = true;
+                f.energy = Math.min(f.energy + nearest.energy, CONFIG.maxEnergy);
+            }
+        }
 
         // energy and food manegment
         f.energy -= CONFIG.energyBurn * dt;

@@ -1,5 +1,6 @@
 import {Container, Graphics} from 'pixi.js';
 import type { World } from '../sim/world';
+import {CONFIG} from '../sim/config';
 
 export class Renderer {
     layer = new Container();
@@ -22,6 +23,7 @@ draw(world: World) {
       }
       g.position.set(f.x, f.y);
       g.rotation = Math.atan2(f.vy, f.vx);
+      g.alpha = 0.3 + 0.7 * (f.energy / CONFIG.maxEnergy);
     }
   
   for (const f of world.food) {
@@ -33,6 +35,15 @@ draw(world: World) {
       this.pelletSprites.set(f.id,g)
     }
     g.position.set(f.x, f.y);
+
   }
-  }   
+   const alive = new Set(world.food.map(p => p.id));
+  
+  for (const [id, g] of this.pelletSprites) {
+    if (!alive.has(id)) {
+      g.destroy();
+      this.pelletSprites.delete(id);
+    }
+  }
+  }
 }

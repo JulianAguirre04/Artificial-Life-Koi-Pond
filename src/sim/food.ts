@@ -3,6 +3,7 @@ export class Food {
     x: number;
     y: number;
     energy: number;
+    eaten: boolean = false;
 
     constructor(id: number, x: number, y: number, energy: number){
         this.id = id;
