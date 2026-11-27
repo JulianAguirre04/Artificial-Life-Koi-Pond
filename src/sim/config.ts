@@ -28,4 +28,13 @@ export const CONFIG = {
     minLifeSpan: 60,
     maxLifeSpan: 90,
 
+// Genome parameters
+    speedMin: 50,
+    speedMax: 100,
+    sizeMin: 5,
+    sizeMax: 12,
+    sightMin: 150,
+    sightMax: 350,
+    colorMin: 0,
+    colorMax: 360,
 };

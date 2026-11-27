@@ -2,6 +2,7 @@ import {CONFIG} from './config';
 import {Fish} from './fish';
 import {Rng} from './rng';
 import {Food} from './food';
+import {randomGenome} from './genome';
 
 export class World{
     fish: Fish[] = [];
@@ -19,7 +20,7 @@ export class World{
             const y = this.rng.range(200, CONFIG.tankHeight - 200);
             const angle = this.rng.range(0, Math.PI * 2);
             const lifespan = this.rng.range(CONFIG.minLifeSpan, CONFIG.maxLifeSpan);
-            this.fish.push(new Fish(this.nextId++, x, y, angle, CONFIG.maxSpeed * 0.5, lifespan));
+            this.fish.push(new Fish(this.nextId++, x, y, angle, lifespan, randomGenome(this.rng)));
         }
     }
     
@@ -32,26 +33,26 @@ export class World{
     }
 
     private updateFish(f: Fish, dt: number) {
-        const { maxSpeed, wallMargin, tankWidth, tankHeight} = CONFIG;
+        const { wallMargin, tankWidth, tankHeight} = CONFIG;
 
 
         // Wander: nudge the heading of the fish it wants a little random
         f.wanderAngle += this.rng.range(-1, 1) * CONFIG.wanderJitter;
-        let desiredX = Math.cos(f.wanderAngle) * maxSpeed;
-        let desiredY = Math.sin(f.wanderAngle) * maxSpeed;
+        let desiredX = Math.cos(f.wanderAngle) * f.maxSpeed;
+        let desiredY = Math.sin(f.wanderAngle) * f.maxSpeed;
 
 
         // Seek: find the closest pellet this fish can see
         let nearest: Food | null = null;
-        let nearestDist = CONFIG.sightRange;
+        let nearestDist = f.sight;
 
         for (const p of this.food) {
            const dx = p.x - f.x;
             const dy = p.y - f.y;
             const d =  Math.hypot(dx, dy);
             if (d < nearestDist) {
-                desiredX = (dx / d) * maxSpeed;
-                desiredY = (dy / d) * maxSpeed;
+                desiredX = (dx / d) * f.maxSpeed;
+                desiredY = (dy / d) * f.maxSpeed;
                 nearest = p;
                 nearestDist = d;
             }
@@ -59,10 +60,10 @@ export class World{
 
         // Walls: near an edge, makes them want to swim back toward center
         let nearWall = false;
-        if (f.x < wallMargin) { desiredX = maxSpeed; nearWall = true; }
-        if (f.x > tankWidth - wallMargin) { desiredX = -maxSpeed; nearWall = true; }
-        if (f.y < wallMargin) { desiredY = maxSpeed; nearWall = true; }
-        if (f.y > tankHeight - wallMargin) { desiredY = -maxSpeed; nearWall = true; }
+        if (f.x < wallMargin) { desiredX = f.maxSpeed; nearWall = true; }
+        if (f.x > tankWidth - wallMargin) { desiredX = -f.maxSpeed; nearWall = true; }
+        if (f.y < wallMargin) { desiredY = f.maxSpeed; nearWall = true; }
+        if (f.y > tankHeight - wallMargin) { desiredY = -f.maxSpeed; nearWall = true; }
         if (nearWall) f.wanderAngle = Math.atan2(desiredY, desiredX);
 
         // Steer: turn velocity what it wants, limited by turnforce
@@ -102,7 +103,7 @@ export class World{
         }
 
         // energy and food manegment
-        f.energy -= CONFIG.energyBurn * dt;
+        f.energy -= f.burn * dt;
         if (!f.dead &&f.energy <= 0) {
             f.dead = true;
             f.deathCause = 'Starved';

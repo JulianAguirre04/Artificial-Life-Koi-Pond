@@ -1,6 +1,7 @@
 import {Container, Graphics} from 'pixi.js';
 import type { World } from '../sim/world';
 import {CONFIG} from '../sim/config';
+import {Color} from 'pixi.js';
 
 export class Renderer {
     layer = new Container();
@@ -15,9 +16,10 @@ draw(world: World) {
   for (const f of world.fish) {
       let g = this.sprites.get(f.id);
       if (!g) {
+        const color = new Color({ h: f.hue, s: 80, l: 60}).toNumber();
         g = new Graphics()
-          .circle(0, 0, 8).fill(0xff6a3d)
-          .moveTo(0, 0).lineTo(16, 0).stroke({ width: 2, color: 0xffffff });
+          .circle(0, 0, 8).fill(color)
+          .moveTo(0, 0).lineTo(f.radius * 2, 0).stroke({ width: 2, color: 0xffffff });
         this.layer.addChild(g);
         this.sprites.set(f.id, g);
       }
