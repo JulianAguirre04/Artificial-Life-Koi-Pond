@@ -41,4 +41,12 @@ export const CONFIG = {
 // Mutation parameters (TMNT)
     mutationRate: 0.1, // probability of mutation per generation
     mutationSize: 0.1, // strength of mutations
+
+// Maintenance parameters (Da freaky parameters)
+    adultAge: 15, // measured in seconds since birth
+    breedEnergy: 70, // minimum energy required to breed
+    breedCost: 30, // energy cost of breeding, shit ain't cheap
+    breedCooldown: 10, 
+    freakRadar: 20, // how close two fish must be to mate ;)
+    maxFish: 80, 
 };
