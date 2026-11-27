@@ -2,7 +2,7 @@ import {CONFIG} from './config';
 import {Fish} from './fish';
 import {Rng} from './rng';
 import {Food} from './food';
-import {randomGenome} from './genome';
+import {geneCrossover, mutateGenome, randomGenome} from './genome';
 
 export class World{
     fish: Fish[] = [];

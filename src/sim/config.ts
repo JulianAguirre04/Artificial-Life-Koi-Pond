@@ -37,4 +37,8 @@ export const CONFIG = {
     sightMax: 350,
     colorMin: 0,
     colorMax: 360,
+
+// Mutation parameters (TMNT)
+    mutationRate: 0.1, // probability of mutation per generation
+    mutationSize: 0.1, // strength of mutations
 };
