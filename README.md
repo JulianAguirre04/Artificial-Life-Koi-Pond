@@ -2,7 +2,7 @@
 
 An artificial life simulation of a koi pond. Fish eat, grow, age, choose mates, breed and die, and their patterns, bodies and personalities evolve across generations.
 
-> **Status:** early development (Phase 1 of 8). The tank renders; fish are next.
+> **Status:** Still in early development (2 of 8) now have a fully functioning tank with "fish" (just dots with lines rn) that swim around and swim towards the nearest available food pellet for energy, with death cycles caused by aging or starvation.
 
 ## The idea
 
