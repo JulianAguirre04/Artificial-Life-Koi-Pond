@@ -45,5 +45,13 @@ draw(world: World) {
       this.pelletSprites.delete(id);
     }
   }
+
+  const aliveFish = new Set(world.fish.map(f => f.id));
+  for (const [id, g] of this.sprites) {
+    if (!aliveFish.has(id)) {
+      g.destroy();
+      this.sprites.delete(id);
+    }
+  }
   }
 }

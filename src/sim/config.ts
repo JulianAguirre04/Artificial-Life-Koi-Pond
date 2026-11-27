@@ -24,4 +24,8 @@ export const CONFIG = {
     sightRange: 250, // how far a fish can see food
     eatRadius: 12, // how close a fish has to be to eat food
 
+// Life Span parameters
+    minLifeSpan: 60,
+    maxLifeSpan: 90,
+
 };

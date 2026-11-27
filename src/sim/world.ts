@@ -18,7 +18,8 @@ export class World{
             const x = this.rng.range(200, CONFIG.tankWidth - 200);
             const y = this.rng.range(200, CONFIG.tankHeight - 200);
             const angle = this.rng.range(0, Math.PI * 2);
-            this.fish.push(new Fish(this.nextId++, x, y, angle, CONFIG.maxSpeed * 0.5));
+            const lifespan = this.rng.range(CONFIG.minLifeSpan, CONFIG.maxLifeSpan);
+            this.fish.push(new Fish(this.nextId++, x, y, angle, CONFIG.maxSpeed * 0.5, lifespan));
         }
     }
     
@@ -27,6 +28,7 @@ export class World{
         for (const f of this.fish) this.updateFish(f, dt);
         this.tick++;
         this.food = this.food.filter(p => !p.eaten);
+        this.fish = this.fish.filter(f => !f.dead);
     }
 
     private updateFish(f: Fish, dt: number) {
@@ -91,8 +93,21 @@ export class World{
             }
         }
 
+        // Lifespan: update age and administer the death penelty if lifespan is reached or exceeded
+        f.age += dt;
+        if (!f.dead && f.age >= f.lifeSpan) {
+            f.dead = true;
+            f.deathCause = 'Old Age';
+            console.log(`Fish ${f.id} died: ${f.deathCause}`)
+        }
+
         // energy and food manegment
         f.energy -= CONFIG.energyBurn * dt;
+        if (!f.dead &&f.energy <= 0) {
+            f.dead = true;
+            f.deathCause = 'Starved';
+            console.log(`Fish ${f.id} died: ${f.deathCause}`)
+        }
     }
 
     private spawnFood(dt: number) {

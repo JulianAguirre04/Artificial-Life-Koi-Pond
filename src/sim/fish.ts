@@ -7,8 +7,12 @@ export class Fish {
     vy: number;
     wanderAngle: number;
     energy: number;
+    age: number;
+    lifeSpan: number;
+    dead: boolean = false;
+    deathCause: 'Starved' | 'Old Age' | null = null;
 
-    constructor(id: number, x: number, y: number, angle: number, speed: number) { 
+    constructor(id: number, x: number, y: number, angle: number, speed: number, lifeSpan: number) { 
         this.id = id;
         this.x = x;
         this.y = y;
@@ -16,5 +20,7 @@ export class Fish {
         this.vy = Math.sin(angle) * speed;
         this.wanderAngle = angle;
         this.energy = CONFIG.startingEnergy;
+        this.age = 0;
+        this.lifeSpan = lifeSpan;
     }
 }
